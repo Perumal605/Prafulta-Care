@@ -1,58 +1,245 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Prafulta Care
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Prafulta Care is a Laravel 13 application for counselling bookings and training programme registrations.
 
-## About Laravel
+It includes:
+- Public home page and training catalogue
+- Guest booking flow with simulated/real Razorpay callback support
+- Role-based dashboards (`admin`, `training_manager`, `counsellor`, `client`)
+- Filament admin panel at `/admin`
+- Demo seed data (users, counsellors, bookings, programmes, registrations)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- PHP `^8.3`
+- Laravel `^13.0`
+- Filament `^5.4`
+- Node.js + Vite + Tailwind
+- SQLite (default) or MySQL (DDEV config uses MySQL 8)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 1) Fresh Setup (Local, without Docker)
 
-## Learning Laravel
+Follow these steps from a clean clone.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Step 1: Clone and enter project
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone <your-repo-url>
+cd Prafulta-Care
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Step 2: Install PHP dependencies
 
-## Contributing
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Step 3: Create environment file
 
-## Code of Conduct
+```bash
+cp .env.example .env
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Step 4: Generate app key
 
-## Security Vulnerabilities
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Step 5: Prepare database
 
-## License
+Default `.env.example` uses SQLite:
+- `DB_CONNECTION=sqlite`
+- Database file: `database/database.sqlite`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+If file is missing, create it:
+
+```bash
+touch database/database.sqlite
+```
+
+### Step 6: Run migrations and seed demo data
+
+```bash
+php artisan migrate --seed
+```
+
+### Step 7: Install frontend dependencies
+
+```bash
+npm install
+```
+
+### Step 8: Build or run frontend assets
+
+For development:
+
+```bash
+npm run dev
+```
+
+For production build:
+
+```bash
+npm run build
+```
+
+### Step 9: Start Laravel app
+
+```bash
+php artisan serve
+```
+
+Open:
+- App: `http://127.0.0.1:8000`
+- Admin panel: `http://127.0.0.1:8000/admin`
+
+## 2) One-Command Setup Option
+
+This project includes a Composer setup script:
+
+```bash
+composer run setup
+```
+
+It runs install + env copy + key generation + migrate + npm install + npm build.
+
+## 3) Run Dev Services Together
+
+You can run app server, queue listener, logs, and Vite in one command:
+
+```bash
+composer run dev
+```
+
+## 4) Demo Login Credentials (Seeded)
+
+After `php artisan migrate --seed`, these users are available:
+
+- `admin@prafulta.local` / `password`
+- `training@prafulta.local` / `password`
+- `counsellor@prafulta.local` / `password`
+- `client@prafulta.local` / `password`
+
+Notes:
+- Filament `/admin` is accessible only for `admin` and `training_manager` roles.
+- In this codebase, `/login` redirects guests to `/register`.
+
+## 5) Payments (Razorpay)
+
+The booking flow supports two modes:
+
+- Simulation mode (default): used when `RAZORPAY_KEY_ID` is not set or equals `simulate`.
+- Razorpay mode: enabled when valid keys are present in `.env`.
+
+Add in `.env` when using real Razorpay:
+
+```env
+RAZORPAY_KEY_ID=your_key_id
+RAZORPAY_KEY_SECRET=your_key_secret
+```
+
+Current callback implementation accepts simulated and real callbacks and marks payment as paid; production-grade signature verification should be tightened before go-live.
+
+## 6) DDEV Setup (Optional)
+
+This repo already contains a `.ddev` setup (`type: laravel`, MySQL 8, PHP 8.4).
+
+### Step 1: Start DDEV
+
+```bash
+ddev start
+```
+
+### Step 2: Install dependencies in container
+
+```bash
+ddev composer install
+ddev npm install
+```
+
+### Step 3: Configure environment
+
+```bash
+cp .env.example .env
+ddev artisan key:generate
+```
+
+### Step 4: Set DB for DDEV MySQL in `.env`
+
+Use DDEV DB values:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=db
+DB_USERNAME=db
+DB_PASSWORD=db
+```
+
+### Step 5: Migrate + seed
+
+```bash
+ddev artisan migrate --seed
+```
+
+### Step 6: Run frontend and open site
+
+```bash
+ddev npm run dev
+ddev launch
+```
+
+## 7) Useful Commands
+
+```bash
+# Run tests
+php artisan test
+
+# Alternative test command from composer script
+composer test
+
+# Clear and rebuild caches
+php artisan optimize:clear
+
+# Reseed database from scratch
+php artisan migrate:fresh --seed
+```
+
+## 8) Project Structure (Quick View)
+
+- `app/Filament` - Admin resources/panels
+- `app/Http/Controllers` - Booking, training, dashboard, auth flows
+- `database/migrations` - Core schema (bookings, training, payments, roles)
+- `database/seeders/PrafultaDemoSeeder.php` - Demo records + credentials
+- `routes/web.php` - Public + role-protected app routes
+- `routes/auth.php` - Registration/auth routes
+
+## 9) Troubleshooting
+
+### Node/Vite issues
+
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run dev
+```
+
+### Vendor/autoload missing
+
+```bash
+composer install
+```
+
+### DB errors after schema changes
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+### Permission issues (Linux)
+
+```bash
+chmod -R ug+rwx storage bootstrap/cache
+```
