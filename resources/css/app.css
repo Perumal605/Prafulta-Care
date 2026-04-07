@@ -1,0 +1,252 @@
+@import url('https://fonts.bunny.net/css?family=manrope:400,500,600,700,800|fraunces:600,700');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --pf-bg: #f4f8f8;
+        --pf-text: #16322f;
+        --pf-muted: #4f6b67;
+        --pf-brand: #0a8f7a;
+        --pf-brand-dark: #0a5f53;
+        --pf-brand-soft: #d5f2ed;
+        --pf-card: #ffffff;
+        --pf-border: #d8e8e4;
+    }
+
+    body {
+        font-family: 'Manrope', sans-serif;
+        color: var(--pf-text);
+        background:
+            radial-gradient(circle at 5% 10%, #d8f7f1 0%, transparent 38%),
+            radial-gradient(circle at 88% 20%, #d7eaf8 0%, transparent 35%),
+            var(--pf-bg);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        font-family: 'Fraunces', serif;
+        letter-spacing: -0.02em;
+    }
+}
+
+@layer components {
+    .pf-container {
+        @apply mx-auto w-full max-w-6xl px-4 md:px-6;
+    }
+
+    .pf-glass-nav {
+        @apply sticky top-0 z-40 border-b backdrop-blur-xl;
+        background: rgba(244, 248, 248, 0.8);
+        border-color: var(--pf-border);
+    }
+
+    .pf-card {
+        @apply rounded-2xl border shadow-sm;
+        background: var(--pf-card);
+        border-color: var(--pf-border);
+    }
+
+    .pf-hero {
+        background: linear-gradient(130deg, #0a8f7a 0%, #0f6f7f 55%, #0b4568 100%);
+    }
+
+    .pf-btn-primary {
+        @apply inline-flex items-center justify-center rounded-xl px-5 py-3 text-sm font-bold text-white transition hover:opacity-90;
+        background: var(--pf-brand-dark);
+    }
+
+    .pf-btn-secondary {
+        @apply inline-flex items-center justify-center rounded-xl border px-5 py-3 text-sm font-semibold transition;
+        border-color: var(--pf-border);
+        color: var(--pf-text);
+        background: #fff;
+    }
+
+    .pf-badge {
+        @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+        background: var(--pf-brand-soft);
+        color: var(--pf-brand-dark);
+    }
+
+    .pf-title {
+        @apply text-3xl leading-tight md:text-5xl;
+    }
+
+    .pf-section-title {
+        @apply text-2xl md:text-4xl;
+    }
+
+    .pf-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(15, 30, 28, 0.55);
+        backdrop-filter: blur(6px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .pf-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .pf-modal {
+        background: var(--pf-card);
+        border: 1px solid var(--pf-border);
+        border-radius: 1.25rem;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+        width: 95%;
+        max-width: 520px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(20px) scale(0.97);
+        transition: transform 0.3s ease;
+        padding: 1.75rem;
+    }
+
+    .pf-overlay.active .pf-modal {
+        transform: translateY(0) scale(1);
+    }
+
+    .pf-sim-gateway {
+        text-align: center;
+    }
+
+    .pf-sim-gateway .pf-sim-amount {
+        font-size: 2.25rem;
+        font-weight: 800;
+        color: var(--pf-brand-dark);
+        font-family: 'Fraunces', serif;
+    }
+
+    .pf-sim-progress {
+        height: 6px;
+        border-radius: 999px;
+        background: var(--pf-border);
+        overflow: hidden;
+        margin-top: 1.25rem;
+    }
+
+    .pf-sim-progress-bar {
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--pf-brand) 0%, #0f6f7f 100%);
+        transition: width 2.5s ease;
+    }
+
+    .pf-checkmark-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--pf-brand) 0%, #0f6f7f 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        animation: pfPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    }
+
+    .pf-checkmark-circle svg {
+        width: 40px;
+        height: 40px;
+        color: #fff;
+        stroke-dasharray: 60;
+        stroke-dashoffset: 60;
+        animation: pfDraw 0.6s ease 0.3s forwards;
+    }
+
+    .pf-input {
+        width: 100%;
+        padding: 0.6rem 0.85rem;
+        border: 1px solid var(--pf-border);
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        background: #fff;
+        transition: border-color 0.2s;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .pf-input:focus {
+        border-color: var(--pf-brand);
+        box-shadow: 0 0 0 3px rgba(10, 143, 122, 0.12);
+    }
+
+    .pf-label {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--pf-muted);
+        margin-bottom: 0.3rem;
+    }
+
+    .pf-form-error {
+        font-size: 0.75rem;
+        color: #dc2626;
+        margin-top: 0.25rem;
+    }
+
+    .pf-spinner {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        border: 2px solid #fff;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: pfSpin 0.6s linear infinite;
+    }
+}
+
+@layer utilities {
+    .pf-fade-up {
+        animation: pfFadeUp 0.8s ease-out both;
+    }
+
+    .pf-fade-up-delay {
+        animation: pfFadeUp 1s ease-out both;
+        animation-delay: 0.12s;
+    }
+
+    @keyframes pfFadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes pfPop {
+        0% {
+            transform: scale(0);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @keyframes pfDraw {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @keyframes pfSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+}
